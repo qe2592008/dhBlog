@@ -1,0 +1,61 @@
+blog:
+  swagger:
+    title: dhBlog
+    desc: Donghao's Blog
+    version: 0.0.1
+  uriList: /user/login, /index, /swagger-ui.html, /swagger-resources, /error
+server:
+  port: 80
+spring:
+  application:
+    name: dhBlog
+#  datasource:
+#    type: com.alibaba.druid.pool.DruidDataSource #druid配置
+#    druid:
+#      initial-size: 5
+#      min-idle: 5
+#      max-active: 20
+#      max-wait: 60000
+#      time-between-eviction-runs-millis: 60000
+#      min-evictable-idle-time-millis: 60000
+#      validation-query: SELECT 1 FROM DUAL
+#      validation-query-timeout:
+#      test-on-borrow: false
+#      test-on-return: false
+#      test-while-idle: true
+#      pool-prepared-statements: true
+#      max-pool-prepared-statement-per-connection-size: 20
+#      filters: stat,wall,log4j
+#      connection-properties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
+#      web-stat-filter:
+#        enabled: true
+#        url-pattern: "/*"
+#        exclusions: "*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*"
+#      stat-view-servlet:
+#        enabled: true
+#        url-pattern: "/druid/*"
+#        allow: 127.0.0.1
+#        deny:
+#        reset-enable: false
+#        login-username: admin
+#        login-password: 123456
+# h2配置
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: sa
+  # freemarker配置
+  freemarker:
+    expose-request-attributes: true
+    expose-session-attributes: true
+
+# mysql配置
+#    driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/dhblog?useSSL=false&characterEncoding=utf8
+#    username: root
+#    password: 123456
+mybatis-plus:
+  type-enums-package: com.dh.blog.enums
+  type-aliases-package: com.dh.blog.entity
+  type-aliases-super-type: java.lang.Object
+  mapper-locations: classpath:/mapper/*.xml

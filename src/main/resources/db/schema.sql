@@ -1,0 +1,30 @@
+create table if not exists USER (
+USE_ID int not n
+ull primary key auto_increment,
+USE_NAME varchar(100),
+USE_SEX varchar(1),
+USE_AGE NUMBER(3),
+USE_ID_NO VARCHAR(18),
+USE_PHONE_NUM VARCHAR(11),
+USE_EMAIL VARCHAR(100),
+CREATE_TIME DATE,
+MODIFY_TIME DATE,
+USE_STATE VARCHAR(1));
+create table if not exists BLOG (
+ID int not null primary key auto_increment,
+TITLE varchar(100),
+SUBTITLE varchar(100),
+IMG_URL varchar(200),
+MANAGER_ID int,
+ARTICLE_NUM_PER_PAGE int,
+COMMENT_NUM_PER_PAGE int,
+COMMENT_LIST_NUM int,
+MOST_COMMENT_ARTICLE_NUM int,
+LASTEST_ARTICLE_NUM int,
+STICK_ARTICLE_NUM int,
+HOTEST_KEYWORD_NUM int,
+HOTEST_ARTICLE_CATEGORY_NUM int,
+CREATOR int,
+MODIFIER int,
+CREATE_TIME DATE,
+MODIFY_TIME DATE);
