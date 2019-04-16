@@ -28,7 +28,6 @@ public class User {
     private String weChat;// 微信
     private String qq;// QQ
     private String email;// 邮箱
-    private String roles;// 角色列表
     private LocalDateTime createTime;// 创建时间
     private String creator;// 创建者
     private LocalDateTime modifyTime;// 修改时间

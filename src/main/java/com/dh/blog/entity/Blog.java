@@ -1,5 +1,8 @@
 package com.dh.blog.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.dh.blog.annotation.InitValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,7 +26,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel("博客模型")
+@TableName("BLOG")
 public class Blog {
+    @TableId@TableField
     @ApiModelProperty(value = "博客ID", notes = "主键ID，自增")
     @NotNull(message = "博客ID不能为空")
     private String id;// 主键ID，自增
@@ -35,7 +40,6 @@ public class Blog {
     private String subtitle;// 子标题，非空
     @ApiModelProperty(value = "图片地址", notes = "图片地址，可空")
     private String imgUrl;// 图片地址，可空
-    @NotNull(message = "管理员不能为空")
     @ApiModelProperty(value = "管理者", notes = "管理者ID，非空", required = true)
     private String managerId;// 管理者ID，非空
     @Range(min = 0, max = 50, message = "每页文章数必须在0-50之内")

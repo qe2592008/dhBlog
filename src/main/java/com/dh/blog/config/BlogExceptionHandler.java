@@ -1,7 +1,11 @@
 package com.dh.blog.config;
 
+import com.dh.blog.entity.Blog;
 import com.dh.blog.entity.User;
 import com.dh.blog.exception.BlogException;
+import com.dh.blog.service.BlogService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -23,6 +27,12 @@ import java.util.Objects;
 @ControllerAdvice
 public class BlogExceptionHandler {
 
+    @Value("${blog.default.id}")
+    private String blogDefaultId;
+
+    @Autowired
+    private BlogService blogService;
+
     // 目的是为了统一处理指定异常
     @ExceptionHandler(BlogException.class)
     public ModelAndView BlogExceptionHandler(BlogException be) {
@@ -40,9 +50,17 @@ public class BlogExceptionHandler {
     // 无论页面是否需要用户数据，都会携带，当然也可以在返回之前将其清除。
     @ModelAttribute
     public void initModel (ModelMap model, HttpSession session) {
-        Object obj = session.getAttribute(Constant.LOGIN_SESSION_KEY);
-        User user = Objects.nonNull(obj) ? (User)obj : null;
-        model.put("_user", user);
-        model.put("test","testString");
+        Object user = session.getAttribute(Constant.LOGIN_SESSION_KEY);
+        Object blog = session.getAttribute(Constant.BLOG_SESSION_KEY);
+        if (Objects.nonNull(user)) {
+            model.put(Constant.LOGIN_SESSION_KEY, (User)user);
+        }
+        if (Objects.isNull(blog)) {
+            Blog _blog = blogService.getById(blogDefaultId).getBody();
+            session.setAttribute(Constant.BLOG_SESSION_KEY, _blog);
+            model.put(Constant.BLOG_SESSION_KEY, _blog);
+            return;
+        }
+        model.put(Constant.BLOG_SESSION_KEY, (Blog)blog);
     }
 }

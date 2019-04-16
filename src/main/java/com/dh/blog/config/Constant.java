@@ -8,7 +8,9 @@ package com.dh.blog.config;
  */
 public interface Constant {
 
-    String LOGIN_SESSION_KEY = "loginSession";
+    String LOGIN_SESSION_KEY = "_user";
+
+    String BLOG_SESSION_KEY = "_blog";
 
     String SYSTEM_ERROR_PAGE = "505";
 

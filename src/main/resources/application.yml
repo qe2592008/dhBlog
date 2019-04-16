@@ -4,6 +4,8 @@ blog:
     desc: Donghao's Blog
     version: 0.0.1
   uriList: /user/login, /index, /swagger-ui.html, /swagger-resources, /error
+  default:
+    id: 1
 server:
   port: 80
 spring:
