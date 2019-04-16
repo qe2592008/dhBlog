@@ -8,13 +8,15 @@ import com.dh.blog.util.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotNull;
 
 @Slf4j
 @Controller
+@Validated
 @RequestMapping("/blog")
 public class BlogController extends BaseController {
 
@@ -34,14 +36,18 @@ public class BlogController extends BaseController {
         return blogService.addBlog(blog, user);
     }
 
-    @RequestMapping(value = "/updateBlog", method = RequestMethod.PUT)
-    public BaseResponse<Integer> updateBlog(final Blog blog, User user) {
+    @PutMapping("/updateBlog")
+    public String updateBlog(@Validated final Blog blog, User user, ModelMap model) {
         log.info("开始执行更新博客操作，博客最新信息为：{}", blog.toString());
-        return blogService.updateBlog(blog, user);
+        blogService.updateBlog(blog, user);
+        model.put("","");
+        return "";
     }
 
-    @RequestMapping(value = "/getBlogById", method = RequestMethod.GET)
-    public BaseResponse<Blog> getBlogById(@RequestParam final String blogId, User user) {
+    @GetMapping("/getBlogById")
+    @ResponseBody
+    public BaseResponse<Blog> getBlogById(
+            @NotNull(message = "博客ID不能为null") @RequestParam final String blogId, User user) {
         log.info("开始执行查找指定博客操作，博客ID：{}", blogId);
         BaseResponse<Blog> response = blogService.getBlogById(blogId);
         if(user != null

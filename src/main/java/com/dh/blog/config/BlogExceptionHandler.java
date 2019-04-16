@@ -1,18 +1,18 @@
 package com.dh.blog.config;
 
+import com.dh.blog.entity.User;
 import com.dh.blog.exception.BlogException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 /**
  * 博客异常处理器
@@ -20,64 +20,29 @@ import java.io.PrintWriter;
  * @author donghao
  * @date 2019/1/4
  */
-@Slf4j
-@Component
-public class BlogExceptionHandler implements HandlerExceptionResolver {
-    @Override
-    public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        long start = System.currentTimeMillis();
-        ModelAndView mav = null;
-        if(ex != null){
-            log.info(ex.getMessage(), ex);
-            if (handler instanceof HandlerMethod) {
-                mav = new ModelAndView();
-                HandlerMethod hm = (HandlerMethod) handler;
-                ResponseBody rb = hm.getMethodAnnotation(ResponseBody.class);
-//                String currPage = request.getHeader("Referer");
-                if (!(rb instanceof ResponseBody)) {
-                    String view = hm.getMethod().getName();
-                    mav.setViewName(view);
-                    if (ex instanceof BlogException) {
-                        BlogException be = (BlogException)ex;
-                        mav.addObject("ex", be);
-                        mav.setViewName(Constant.APP_ERROR_PAGE);
-                    } else {
-                        mav.addObject("ex", ex);
-                        mav.setViewName(Constant.SYSTEM_ERROR_PAGE);
-                    }
-                } else {
-                    ToJson(response, ex);
-                }
-            }
-        }
-        long end = System.currentTimeMillis();
-        System.out.println("处理错误异常信息耗时：" + (end - start) + "毫秒。");
-        return mav;
+@ControllerAdvice
+public class BlogExceptionHandler {
+
+    // 目的是为了统一处理指定异常
+    @ExceptionHandler(BlogException.class)
+    public ModelAndView BlogExceptionHandler(BlogException be) {
+        ModelAndView modelAndView = new ModelAndView("404");///templates/blog/view/error
+        modelAndView.addObject("code",be.getCode());
+        modelAndView.addObject("info", be.getInfo());
+        return modelAndView;
     }
 
-    private void ToJson(HttpServletResponse response, Exception ex) {
-        // 将实体对象转换为JSON
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/plain;charset=UTF-8");
-        ObjectMapper mapper = new ObjectMapper();
-        PrintWriter out = null;
-        String jsonString = null;
-        try {
-            out = response.getWriter();
-            if (!(ex instanceof BlogException)) {
-                BlogException exception = new BlogException("", "系统出现异常!!!");
-                jsonString = mapper.writeValueAsString(exception);
-            } else {
-                jsonString = mapper.writeValueAsString(ex);
-            }
-            out.append(jsonString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (out != null) {
-                out.flush();
-                out.close();
-            }
-        }
+    @InitBinder
+    public void intiBinder(WebDataBinder binder) {
+        binder.getValidators();
+    }
+    // 目的是提前将用户的登录session放到Model中，这种方式不好之处在于
+    // 无论页面是否需要用户数据，都会携带，当然也可以在返回之前将其清除。
+    @ModelAttribute
+    public void initModel (ModelMap model, HttpSession session) {
+        Object obj = session.getAttribute(Constant.LOGIN_SESSION_KEY);
+        User user = Objects.nonNull(obj) ? (User)obj : null;
+        model.put("_user", user);
+        model.put("test","testString");
     }
 }

@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 @ApiModel("博客模型")
 public class Blog {
     @ApiModelProperty(value = "博客ID", notes = "主键ID，自增")
+    @NotNull(message = "博客ID不能为空")
     private String id;// 主键ID，自增
     @NotNull(message = "博客标题不能为空")
     @ApiModelProperty(value = "博客标题", notes = "博客标题", required = true)

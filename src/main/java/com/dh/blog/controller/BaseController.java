@@ -1,5 +1,6 @@
 package com.dh.blog.controller;
 
+import com.dh.blog.exception.BlogException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,4 +22,9 @@ public class BaseController {
 
     @Autowired
     protected HttpServletResponse response;
+
+    @RequestMapping("/test")
+    public void testException(){
+        throw new BlogException("1234","cuole!");
+    }
 }

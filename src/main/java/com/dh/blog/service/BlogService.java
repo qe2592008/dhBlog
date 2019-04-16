@@ -3,6 +3,7 @@ package com.dh.blog.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dh.blog.config.BlogError;
 import com.dh.blog.entity.Blog;
 import com.dh.blog.entity.User;
 import com.dh.blog.exception.BlogException;
@@ -40,11 +41,11 @@ public class BlogService extends BaseService {
             insertNum = blogRepository.insert(blog);
         } catch(Exception e) {
             log.warn("添加新博客发生异常，博客信息为：{}", blog.toString(), e);
-            throw new BlogException("addBlogException", "添加新博客发生异常", e);
+            throw new BlogException(BlogError.ADD_BLOG_EXCEPTION, e);
         }
         if(insertNum < 1) {
             log.warn("添加新博客失败，博客信息为：{}", blog.toString());
-            throw new BlogException("addBlogFailure", "添加新博客失败");
+            throw new BlogException(BlogError.ADD_BLOG_FAILURE);
         }
         return BaseResponse.builder()
                 .body(insertNum)
@@ -66,11 +67,11 @@ public class BlogService extends BaseService {
                     .eq("id", blog.getId()));
         } catch (Exception e) {
             log.warn("更新博客发生异常，博客最新信息为：{}", blog.toString(), e);
-            throw new BlogException("updateBlogException", "更新博客发生异常", e);
+            throw new BlogException(BlogError.UPDATE_BLOG_EXCEPTION, e);
         }
         if(updateNum < 1) {
             log.warn("更新博客失败，博客最新信息为：{}", blog.toString());
-            throw new BlogException("addBlogFailure", "更新博客失败");
+            throw new BlogException(BlogError.UPDATE_BLOG_FAILURE);
         }
         return BaseResponse.builder()
                 .body(updateNum)
@@ -118,7 +119,7 @@ public class BlogService extends BaseService {
         Blog blog = blogRepository.selectById(blogId);
         if(Objects.isNull(blog)){
             log.warn("查询博客信息失败,博客ID：{}", blogId);
-            throw new BlogException("queryBlogFailure", "查询博客信息失败");
+            throw new BlogException(BlogError.QUERY_BLOG_FAILURE);
         }
         return BaseResponse.builder()
                 .body(blog)
